@@ -1,3 +1,0 @@
-SELECT (COUNT(?v4) as ?count) WHERE {
-	?v4 <http://db.uwaterloo.ca/~galuc/wsdbm/makesPurchase> ?v5 .	
-}

@@ -1,3 +1,0 @@
-SELECT (COUNT(?v2) as ?count) WHERE {
-	?v2 <http://purl.org/goodrelations/includes> ?v0 .	
-}

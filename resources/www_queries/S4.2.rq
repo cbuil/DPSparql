@@ -1,3 +1,0 @@
-SELECT (COUNT(?v0) as ?count) WHERE {
-  	?v3 <http://purl.org/ontology/mo/artist> ?v0 . 	
- }
