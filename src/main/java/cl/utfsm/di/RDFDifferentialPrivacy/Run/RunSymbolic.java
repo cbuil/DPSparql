@@ -29,7 +29,6 @@ import java.util.concurrent.ExecutionException;
 
 import com.google.gson.Gson;
 
-
 public class RunSymbolic
 {
 
@@ -41,7 +40,6 @@ public class RunSymbolic
 
     private static String queryString = "";
     private static String queryFile = "";
-    private static final String queryDir = "";
     private static String dataFile = "";
     private static String outputFile = "";
     private static String endpoint = "";
@@ -61,11 +59,13 @@ public class RunSymbolic
             Path queryLocation = Paths.get(queryFile);
             if (Files.isRegularFile(queryLocation))
             {
-                queryString = new Scanner(new File(queryFile))
-                        .useDelimiter("\\Z").next();
-                logger.info(queryString);
-                runAnalysis(queryFile, queryString, dataSource, outputFile,
-                        evaluation, EPSILON);
+                try (Scanner input = new Scanner(new File(queryFile)))
+                {
+                    queryString = input.useDelimiter("\\Z").next();
+                    logger.info(queryString);
+                    runAnalysis(queryFile, queryString, dataSource, outputFile,
+                            evaluation, EPSILON);
+                }
             }
             else if (Files.isDirectory(queryLocation))
             {
@@ -77,11 +77,10 @@ public class RunSymbolic
                     Path nextQuery = filesPath.next();
                     logger.info("Running analysis to query: "
                             + nextQuery.toString());
-                    queryString = new Scanner(nextQuery).useDelimiter("\\Z")
-                            .next();
-                    logger.debug(queryString);
-                    try
+                    try (Scanner input = new Scanner(nextQuery))
                     {
+                        queryString = input.useDelimiter("\\Z").next();
+                        logger.debug(queryString);
                         runAnalysis(nextQuery.toString(), queryString,
                                 dataSource, outputFile, evaluation, EPSILON);
                     }
@@ -140,9 +139,6 @@ public class RunSymbolic
                     .replaceFirst("SELECT.*WHERE", "CONSTRUCT WHERE")
                     .replaceFirst("FILTER.*\\)", "");
             logger.info("graph query: " + construct);
-            Query constructQuery = QueryFactory.create(construct);
-            // long graphSize =
-            // hdtDataSource.graphSizeCache.get(constructQuery);
 
             hdtDataSource.setMostFreqValueMaps(starQueriesMap, triplePatterns);
 

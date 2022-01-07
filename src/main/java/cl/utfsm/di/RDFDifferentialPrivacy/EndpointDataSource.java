@@ -14,6 +14,7 @@ import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.sparql.core.TriplePath;
+import org.apache.jena.sparql.exec.http.QueryExecutionHTTP;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -86,8 +87,8 @@ public class EndpointDataSource implements DataSource
     @Override
     public ResultSet excecuteQuery(Query query)
     {
-        try (QueryExecution qexec = QueryExecutionFactory
-                .sparqlService(datasource, query))
+        try (QueryExecution qexec = QueryExecutionHTTP
+                .service(datasource, query))
         {
             ResultSet results = qexec.execSelect();
             results = ResultSetFactory.copyResults(results);
@@ -99,8 +100,8 @@ public class EndpointDataSource implements DataSource
     @Override
     public long getGraphSize(Query query)
     {
-        try (QueryExecution qexec = QueryExecutionFactory
-                .sparqlService(datasource, query))
+        try (QueryExecution qexec = QueryExecutionHTTP
+                .service(datasource, query))
         {
             Model results = qexec.execConstruct();
             long resultSize = results.size();
@@ -120,7 +121,7 @@ public class EndpointDataSource implements DataSource
         {
             return 85869721;
         }
-        QueryExecution qexec = QueryExecutionFactory.sparqlService(datasource,
+        QueryExecution qexec = QueryExecutionHTTP.service(datasource,
                 query);
         ResultSet results = qexec.execSelect();
         QuerySolution soln = results.nextSolution();
@@ -269,8 +270,8 @@ public class EndpointDataSource implements DataSource
 
         logger.info("query at getMostFrequentResult: " + maxFreqQueryString);
         Query query = QueryFactory.create(maxFreqQueryString);
-        try (QueryExecution qexec = QueryExecutionFactory
-                .sparqlService(datasource, query))
+        try (QueryExecution qexec = QueryExecutionHTTP
+                .service(datasource, query))
         {
             ResultSet results = qexec.execSelect();
             if (results.hasNext())

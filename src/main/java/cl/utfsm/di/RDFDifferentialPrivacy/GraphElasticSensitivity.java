@@ -5,8 +5,6 @@ import org.apache.logging.log4j.Logger;
 
 import cl.utfsm.di.RDFDifferentialPrivacy.utils.Polynomial;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,30 +20,11 @@ public class GraphElasticSensitivity {
     private static final Logger logger = LogManager
             .getLogger(GraphElasticSensitivity.class.getName());
 
-    // public static double setOfMappingsSensitivity(String elasticSensitivity,
-    // double prevSensitivity, double beta, int k) {
-    // Func f1 = new Func("f1", elasticSensitivity);
-    // BytecodeFunc func1 = f1.toBytecodeFunc();
-
-    // double smoothSensitivity = Math.exp(-k * beta) * func1.apply(k);
-
-    // if (func1.apply(0) == 0 || (smoothSensitivity < prevSensitivity)) {
-    // return prevSensitivity;
-    // } else {
-    // return setOfMappingsSensitivity(elasticSensitivity,
-    // smoothSensitivity, beta, k + 1);
-    // }
-    // }
 
     public static StarQuery calculateSensitivity(int k,
             List<StarQuery> listStars, double EPSILON,
             DataSource dataSource) throws ExecutionException, CloneNotSupportedException {
-        PrintStream dummyStream = new PrintStream(new OutputStream() {
-            @Override
-            public void write(int b) {
-                // NO-OP
-            }
-        });
+
         StarQuery starQueryFirst = Collections.max(listStars);
         listStars.remove(starQueryFirst);
 
@@ -159,7 +138,7 @@ public class GraphElasticSensitivity {
         ExprEvaluator exprEvaluator = new ExprEvaluator(false, historyCapacity);
         IExpr result;
 
-        for (int i = 0; i < graphSize; i++) {
+        for (int i = 0; i < ceil; i++) {
             
             result = exprEvaluator.eval("Function({x}, " + elasticSensitivity + ")[" + i + "]");
             double kPrime = exprEvaluator.evalf(result);
@@ -220,7 +199,6 @@ public class GraphElasticSensitivity {
         String strResult = result.toString();
 
         double ceilMaxCandidate = k;
-        int maxI = k;
 
         if (strResult.equals("{}")) {
             logger.info("The function has no roots.");
