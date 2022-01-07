@@ -13,7 +13,6 @@ import org.apache.jena.sparql.syntax.ElementGroup;
 import org.apache.jena.sparql.syntax.ElementPathBlock;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import symjava.symbolic.Expr;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,9 +28,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
-import static symjava.symbolic.Symbol.x;
 
 public class RunSymbolic
 {
@@ -128,7 +125,7 @@ public class RunSymbolic
         boolean starQuery = false;
         if (element instanceof ElementPathBlock)
         {
-            Expr elasticStability = Expr.valueOf(0);
+            String elasticStability = "0";
 
             int k = 1;
 
@@ -168,7 +165,7 @@ public class RunSymbolic
                         graphSize += schemaInfo.mSize;
                 }
                 starQuery = true;
-                elasticStability = x;
+                elasticStability = "x";
                 Sensitivity sensitivity = new Sensitivity(1.0,
                         elasticStability);
                 smoothSensitivity = GraphElasticSensitivity
@@ -297,7 +294,7 @@ public class RunSymbolic
 
     private static void writeAnalysisResult(double scale, String queryFile,
             double ePSILON, boolean evaluation, int countQueryResult,
-            Expr elasticStability, long graphSize, boolean starQuery,
+            String elasticStability, long graphSize, boolean starQuery,
             DataSource hdtDataSource, double EPSILON,
             Sensitivity smoothSensitivity, String outpuFile) throws IOException
     {

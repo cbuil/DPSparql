@@ -27,7 +27,7 @@ public class Result
     private boolean starQuery;
 
     public Result(String query, double epsilon, List<Double> resultList, double sensitivity, List<Integer>  result,
-            int maxK, double scale, Expr elasticStability,
+            int maxK, double scale, String elasticStability,
             long graphSize, boolean starQuery, Map<String, List<Integer>> mapMostFreqValue, Map<String, List<StarQuery>> mapMostFreqValueStar)
     {
         this.query = query;
