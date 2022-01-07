@@ -260,4 +260,26 @@ public class Helper
             return false;
         }
     }
+
+    public static String getStarType(Query query){
+       List<Element> elements = ((ElementGroup) query.getQueryPattern())
+                .getElements();
+        ElementPathBlock element = (ElementPathBlock) elements.get(0);
+        List<TriplePath> triplePath = element.getPattern().getList();
+        String starQueryVariable = "";
+        for (TriplePath tripleInQuery : triplePath)
+        {
+            if (tripleInQuery.getObject().isURI())
+            {
+                if(tripleInQuery.getObject().getURI().contains("Q5")){
+                    return "human";
+                } else if(tripleInQuery.getObject().getURI().contains("Q28640")){
+                    return "professions";
+                } else if(tripleInQuery.getObject().getURI().contains("Q43229")){
+                    return "organizations";
+                }
+            }
+        }
+        return "humans";
+    }
 }

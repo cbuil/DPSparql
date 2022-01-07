@@ -1,0 +1,17 @@
+[
+    {
+        "name": "humans",
+        "size": 7000000,
+        "endpoint": "http://localhost:3030/Humans/sparql"
+    },
+    {
+        "name": "organizations",
+        "size": 39195,
+        "endpoint": "http://localhost:3030/Organizations/sparql"
+    },
+    {
+        "name": "professions",
+        "size": 4329,
+        "endpoint": "http://localhost:3030/Professions/sparql"
+    }
+]

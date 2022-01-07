@@ -24,10 +24,11 @@ import java.util.logging.Level;
 /**
  * @author cbuil
  */
-public class EndpointDataSource implements DataSource {
+public class EndpointDataSource implements DataSource
+{
 
     private static final Logger logger = LogManager
-            .getLogger(HdtDataSource.class.getName());
+            .getLogger(EndpointDataSource.class.getName());
 
     private final String datasource;
 
@@ -39,17 +40,22 @@ public class EndpointDataSource implements DataSource {
 
     private final static Map<String, List<StarQuery>> mapMostFreqValueStar = new HashMap<>();
 
-    public EndpointDataSource(String endpoint) {
+    public EndpointDataSource(String endpoint)
+    {
         datasource = endpoint;
         mostFrequenResultCache = CacheBuilder.newBuilder().recordStats()
                 .maximumWeight(100000)
-                .weigher(new Weigher<MaxFreqQuery, Integer>() {
-                    public int weigh(MaxFreqQuery k, Integer resultSize) {
+                .weigher(new Weigher<MaxFreqQuery, Integer>()
+                {
+                    public int weigh(MaxFreqQuery k, Integer resultSize)
+                    {
                         return k.getQuerySize();
                     }
-                }).build(new CacheLoader<MaxFreqQuery, Integer>() {
+                }).build(new CacheLoader<MaxFreqQuery, Integer>()
+                {
                     @Override
-                    public Integer load(MaxFreqQuery s) throws Exception {
+                    public Integer load(MaxFreqQuery s) throws Exception
+                    {
                         logger.debug(
                                 "into mostPopularValueCache CacheLoader, loading: "
                                         + s.toString());
@@ -58,13 +64,17 @@ public class EndpointDataSource implements DataSource {
                     }
                 });
         graphSizeCache = CacheBuilder.newBuilder().recordStats()
-                .maximumWeight(1000).weigher(new Weigher<Query, Long>() {
-                    public int weigh(Query k, Long resultSize) {
+                .maximumWeight(1000).weigher(new Weigher<Query, Long>()
+                {
+                    public int weigh(Query k, Long resultSize)
+                    {
                         return k.toString().length();
                     }
-                }).build(new CacheLoader<Query, Long>() {
+                }).build(new CacheLoader<Query, Long>()
+                {
                     @Override
-                    public Long load(Query q) {
+                    public Long load(Query q)
+                    {
                         logger.debug(
                                 "into graphSizeCache CacheLoader, loading: "
                                         + q.toString());
@@ -74,9 +84,11 @@ public class EndpointDataSource implements DataSource {
     }
 
     @Override
-    public ResultSet excecuteQuery(Query query) {
+    public ResultSet excecuteQuery(Query query)
+    {
         try (QueryExecution qexec = QueryExecutionFactory
-                .sparqlService(datasource, query)) {
+                .sparqlService(datasource, query))
+        {
             ResultSet results = qexec.execSelect();
             results = ResultSetFactory.copyResults(results);
             qexec.close();
@@ -85,9 +97,11 @@ public class EndpointDataSource implements DataSource {
     }
 
     @Override
-    public long getGraphSize(Query query) {
+    public long getGraphSize(Query query)
+    {
         try (QueryExecution qexec = QueryExecutionFactory
-                .sparqlService(datasource, query)) {
+                .sparqlService(datasource, query))
+        {
             Model results = qexec.execConstruct();
             long resultSize = results.size();
             qexec.close();
@@ -96,15 +110,18 @@ public class EndpointDataSource implements DataSource {
     }
 
     @Override
-    public int executeCountQuery(String queryString) {
+    public int executeCountQuery(String queryString)
+    {
         Query query = QueryFactory.create(queryString);
         logger.info("count query: " + queryString);
         logger.info("query endpoint: " + datasource);
-        if (queryString.contains("http://www.wikidata.org/prop/direct/P31") && (queryString.lastIndexOf('?') != queryString.indexOf('?'))) {
+        if (queryString.contains("http://www.wikidata.org/prop/direct/P31")
+                && (queryString.lastIndexOf('?') != queryString.indexOf('?')))
+        {
             return 85869721;
         }
-        QueryExecution qexec = QueryExecutionFactory
-                .sparqlService(datasource, query);
+        QueryExecution qexec = QueryExecutionFactory.sparqlService(datasource,
+                query);
         ResultSet results = qexec.execSelect();
         QuerySolution soln = results.nextSolution();
         logger.info("count query executed... ");
@@ -139,17 +156,20 @@ public class EndpointDataSource implements DataSource {
     {
         try
         {
-            return this.mostFrequenResultCache
-                    .get(maxFreqQuery);
-        } catch (ExecutionException ex)
+            return this.mostFrequenResultCache.get(maxFreqQuery);
+        }
+        catch (ExecutionException ex)
         {
-            java.util.logging.Logger.getLogger(HdtDataSource.class.getName()).log(Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EndpointDataSource.class.getName())
+                    .log(Level.SEVERE, null, ex);
             return -1;
         }
     }
 
     @Override
-    public void setMostFreqValueMaps(Map<String, List<TriplePath>> starQueriesMap, List<List<String>> triplePatterns) throws ExecutionException
+    public void setMostFreqValueMaps(
+            Map<String, List<TriplePath>> starQueriesMap,
+            List<List<String>> triplePatterns) throws ExecutionException
     {
         Map<String, List<Integer>> mapMostFreqValue = new HashMap<>();
         Map<String, List<StarQuery>> mapMostFreqValueStar = new HashMap<>();
@@ -166,7 +186,8 @@ public class EndpointDataSource implements DataSource {
                 {
                     varStrings.add(triplePath.getSubject().getName());
                     triple += "?" + triplePath.getSubject().getName();
-                } else
+                }
+                else
                 {
                     triple += " ?s" + i + " ";
                 }
@@ -175,7 +196,8 @@ public class EndpointDataSource implements DataSource {
                 {
                     varStrings.add(triplePath.getObject().getName());
                     triple += "?" + triplePath.getObject().getName();
-                } else
+                }
+                else
                 {
                     triple += " ?o" + i + " ";
                 }
@@ -185,8 +207,7 @@ public class EndpointDataSource implements DataSource {
 
             triplePatterns.add(listTriple);
 
-            Set<String> listWithoutDuplicates = new LinkedHashSet<>(
-                    varStrings);
+            Set<String> listWithoutDuplicates = new LinkedHashSet<>(varStrings);
             varStrings.clear();
 
             varStrings.addAll(listWithoutDuplicates);
@@ -202,20 +223,20 @@ public class EndpointDataSource implements DataSource {
                             .get(var);
                     if (!mostFreqValues.isEmpty())
                     {
-                        mostFreqValues.add(this.mostFrequenResultCache
-                                .get(query));
+                        mostFreqValues
+                                .add(this.mostFrequenResultCache.get(query));
                         mapMostFreqValue.put(var, mostFreqValues);
 
                         mostFreqValuesStar.add(new StarQuery(starQueryLeft));
                         mapMostFreqValueStar.put(var, mostFreqValuesStar);
                     }
-                } else
+                }
+                else
                 {
                     List<Integer> mostFreqValues = new ArrayList<>();
                     logger.info("query: " + query.getQuery());
                     logger.info("variable: " + query.getVariableString());
-                    mostFreqValues.add(
-                            this.mostFrequenResultCache.get(query));
+                    mostFreqValues.add(this.mostFrequenResultCache.get(query));
                     mapMostFreqValue.put(var, mostFreqValues);
                     List<StarQuery> mostFreqValuesStar = new ArrayList<>();
                     mostFreqValuesStar.add(new StarQuery(starQueryLeft));
@@ -237,28 +258,32 @@ public class EndpointDataSource implements DataSource {
         return mapMostFreqValue;
     }
 
-    private int getMostFrequentResult(String starQuery,
-            String variableName) {
+    private int getMostFrequentResult(String starQuery, String variableName)
+    {
 
         variableName = variableName.replace("“", "").replace("”", "");
         String maxFreqQueryString = "select (count(?" + variableName
-                + ") as ?count) where { select ?" + variableName + " WHERE { " + starQuery + "} LIMIT 1000000 " + "} GROUP BY ?"
-                + variableName + " " + "ORDER BY ?" + variableName
-                + " DESC (?count) LIMIT 1 ";
+                + ") as ?count) where { select ?" + variableName + " WHERE { "
+                + starQuery + "} LIMIT 1000000 " + "} GROUP BY ?" + variableName
+                + " " + "ORDER BY ?" + variableName + " DESC (?count) LIMIT 1 ";
 
         logger.info("query at getMostFrequentResult: " + maxFreqQueryString);
         Query query = QueryFactory.create(maxFreqQueryString);
         try (QueryExecution qexec = QueryExecutionFactory
-                .sparqlService(datasource, query)) {
+                .sparqlService(datasource, query))
+        {
             ResultSet results = qexec.execSelect();
-            if (results.hasNext()) {
+            if (results.hasNext())
+            {
                 QuerySolution soln = results.nextSolution();
                 RDFNode x = soln.get("count");
                 int res = x.asLiteral().getInt();
                 logger.info("max freq value: " + res + " for variable "
                         + variableName);
                 return res;
-            } else {
+            }
+            else
+            {
                 return 0;
             }
         }
