@@ -282,4 +282,56 @@ public class Helper
         }
         return "humans";
     }
+    
+    public static Map<String, List<TriplePath>> getStarPatterns(Query query, List<SchemaInfo> schemaInfos)
+    {
+        List<Element> elements = ((ElementGroup) query.getQueryPattern())
+                .getElements();
+        List<TriplePath> tripleList = new ArrayList<TriplePath>();
+
+        Map<String, List<TriplePath>> starMap = new HashMap<String, List<TriplePath>>();
+
+        ElementPathBlock element = (ElementPathBlock) elements.get(0);
+        List<TriplePath> triplePath = element.getPattern().getList();
+        for (TriplePath tripleInQuery : triplePath)
+        {
+            if (tripleInQuery.getSubject().isVariable())
+            {
+                if (!starMap.containsKey(tripleInQuery.getSubject().getName()))
+                {
+                    tripleList = new ArrayList<TriplePath>();
+                    tripleList.add(tripleInQuery);
+                    starMap.put(tripleInQuery.getSubject().getName(),
+                            tripleList);
+                }
+                else
+                {
+                    tripleList = starMap
+                            .get(tripleInQuery.getSubject().getName());
+                    tripleList.add(tripleInQuery);
+                    starMap.put(tripleInQuery.getSubject().getName(),
+                            tripleList);
+                }
+            }
+            else if (tripleInQuery.getSubject().isURI())
+            {
+                if (!starMap.containsKey(tripleInQuery.getSubject().getURI()))
+                {
+                    tripleList = new ArrayList<TriplePath>();
+                    tripleList.add(tripleInQuery);
+                    starMap.put(tripleInQuery.getSubject().getURI(),
+                            tripleList);
+                }
+                else
+                {
+                    tripleList = starMap
+                            .get(tripleInQuery.getSubject().getURI());
+                    tripleList.add(tripleInQuery);
+                    starMap.put(tripleInQuery.getSubject().getURI(),
+                            tripleList);
+                }
+            }
+        }
+        return starMap;
+    }
 }

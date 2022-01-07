@@ -149,7 +149,7 @@ public class RunSymbolic
 
             hdtDataSource.setMostFreqValueMaps(starQueriesMap, triplePatterns);
 
-             long graphSize = 0;
+            long graphSize = 0;
             for (SchemaInfo si : schemaInfos)
             {
                 graphSize += si.mSize;
@@ -161,6 +161,7 @@ public class RunSymbolic
             double beta = EPSILON / (2 * Math.log(2 / DELTA));
             if (Helper.isStarQuery(q))
             {
+                String starType = Helper.getStarType(q);
                 for (SchemaInfo schemaInfo : schemaInfos)
                 {
                     if (schemaInfo.mSchemaName == starType)
