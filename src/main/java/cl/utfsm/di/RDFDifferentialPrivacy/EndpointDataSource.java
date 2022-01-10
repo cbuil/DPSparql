@@ -228,7 +228,7 @@ public class EndpointDataSource implements DataSource
                                 .add(this.mostFrequenResultCache.get(query));
                         mapMostFreqValue.put(var, mostFreqValues);
 
-                        mostFreqValuesStar.add(new StarQuery(starQueryLeft));
+                        mostFreqValuesStar.add(new StarQuery(starQueryLeft, var));
                         mapMostFreqValueStar.put(var, mostFreqValuesStar);
                     }
                 }
@@ -240,7 +240,7 @@ public class EndpointDataSource implements DataSource
                     mostFreqValues.add(this.mostFrequenResultCache.get(query));
                     mapMostFreqValue.put(var, mostFreqValues);
                     List<StarQuery> mostFreqValuesStar = new ArrayList<>();
-                    mostFreqValuesStar.add(new StarQuery(starQueryLeft));
+                    mostFreqValuesStar.add(new StarQuery(starQueryLeft, var));
                     mapMostFreqValueStar.put(var, mostFreqValuesStar);
                 }
             }

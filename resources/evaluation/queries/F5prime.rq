@@ -8,8 +8,8 @@ PREFIX wd: <http://www.wikidata.org/entity/>
 PREFIX schema: <http://schema.org/>
 SELECT  (COUNT(?person) as ?count)
 WHERE {
-  ?person wdt:P2002 ?twitterName .
-  ?person  wdt:P106 ?occupation .
-  ?occupation wdt:P279 ?tmp1 .
+  ?humans wdt:P2002 ?twitterName .
+  ?humans  wdt:P106 ?professions .
+  ?professions wdt:P279 ?tmp1 .
   ?tmp1 wdt:P279 ?tmp2 . # all subclasses of biologists
 }

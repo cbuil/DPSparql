@@ -29,11 +29,9 @@ import java.util.concurrent.ExecutionException;
 
 import com.google.gson.Gson;
 
-public class RunSymbolic
-{
+public class RunSymbolic {
 
-    private static final Logger logger = LogManager
-            .getLogger(RunSymbolic.class.getName());
+    private static final Logger logger = LogManager.getLogger(RunSymbolic.class.getName());
 
     // privacy budget
     private static double EPSILON = 0.1;
@@ -45,74 +43,52 @@ public class RunSymbolic
     private static String endpoint = "";
     private static boolean evaluation = false;
 
-    public static void main(String[] args)
-            throws IOException, CloneNotSupportedException, ExecutionException
-    {
+    public static void main(String[] args) throws IOException, CloneNotSupportedException, ExecutionException {
 
         parseInput(args);
 
-        try
-        {
+        try {
             DataSource dataSource;
             dataSource = new EndpointDataSource(dataFile);
 
             Path queryLocation = Paths.get(queryFile);
-            if (Files.isRegularFile(queryLocation))
-            {
-                try (Scanner input = new Scanner(new File(queryFile)))
-                {
+            if (Files.isRegularFile(queryLocation)) {
+                try (Scanner input = new Scanner(new File(queryFile))) {
                     queryString = input.useDelimiter("\\Z").next();
                     logger.info(queryString);
-                    runAnalysis(queryFile, queryString, dataSource, outputFile,
-                            evaluation, EPSILON);
-                }
-            }
-            else if (Files.isDirectory(queryLocation))
-            {
-                Iterator<Path> filesPath = Files.list(Paths.get(queryFile))
-                        .filter(p -> p.toString().endsWith(".rq")).iterator();
+                    runAnalysis(queryFile, queryString, dataSource, outputFile, evaluation, EPSILON);
+               }
+            } else if (Files.isDirectory(queryLocation)) {
+                Iterator<Path> filesPath = Files.list(Paths.get(queryFile)).filter(p -> p.toString().endsWith(".rq"))
+                        .iterator();
                 logger.info("Running analysis to DIRECTORY: " + queryLocation);
-                while (filesPath.hasNext())
-                {
+                while (filesPath.hasNext()) {
                     Path nextQuery = filesPath.next();
-                    logger.info("Running analysis to query: "
-                            + nextQuery.toString());
-                    try (Scanner input = new Scanner(nextQuery))
-                    {
+                    logger.info("Running analysis to query: " + nextQuery.toString());
+                    try (Scanner input = new Scanner(nextQuery)) {
                         queryString = input.useDelimiter("\\Z").next();
                         logger.debug(queryString);
-                        runAnalysis(nextQuery.toString(), queryString,
-                                dataSource, outputFile, evaluation, EPSILON);
-                    }
-                    catch (Exception e)
-                    {
+                        runAnalysis(nextQuery.toString(), queryString, dataSource, outputFile, evaluation, EPSILON);
+                    } catch (Exception e) {
                         logger.error("query failed!!: " + nextQuery.toString());
                     }
                     // logger.info("Cache stats: "
                     // + dataSource.mostFrequenResultStats());
                 }
-            }
-            else
-            {
-                if (Files.notExists(queryLocation))
-                {
+            } else {
+                if (Files.notExists(queryLocation)) {
                     throw new FileNotFoundException("No query file");
                 }
             }
-        }
-        catch (IOException e1)
-        {
+        } catch (IOException e1) {
             System.out.println("Exception: " + e1.getMessage());
             System.exit(-1);
         }
     }
 
-    private static void runAnalysis(String queryFile, String queryString,
-            DataSource hdtDataSource, String outpuFile, boolean evaluation,
-            double EPSILON)
-            throws IOException, CloneNotSupportedException, ExecutionException
-    {
-        int countQueryResult = hdtDataSource.executeCountQuery(queryString);
+    private static void runAnalysis(String queryFile, String queryString, DataSource dataSource, String outpuFile,
+            boolean evaluation, double EPSILON) throws IOException, CloneNotSupportedException, ExecutionException {
+        int countQueryResult = dataSource.executeCountQuery(queryString);
         Query q = QueryFactory.create(queryString);
 
         List<List<String>> triplePatterns = new ArrayList<>();
@@ -122,8 +98,7 @@ public class RunSymbolic
         Sensitivity smoothSensitivity;
         Element element = elementList.get(0);
         boolean starQuery = false;
-        if (element instanceof ElementPathBlock)
-        {
+        if (element instanceof ElementPathBlock) {
             String elasticStability = "0";
 
             int k = 1;
@@ -132,79 +107,56 @@ public class RunSymbolic
             // .getStarPatterns(q);
 
             List<SchemaInfo> schemaInfos = getSchemasInfo();
-            Map<String, List<TriplePath>> starQueriesMap = Helper
-                    .getStarPatterns(q, schemaInfos);
+            Map<String, List<TriplePath>> starQueriesMap = Helper.getStarPatterns(q, schemaInfos);
 
-            String construct = queryString
-                    .replaceFirst("SELECT.*WHERE", "CONSTRUCT WHERE")
-                    .replaceFirst("FILTER.*\\)", "");
-            logger.info("graph query: " + construct);
-
-            hdtDataSource.setMostFreqValueMaps(starQueriesMap, triplePatterns);
+            dataSource.setMostFreqValueMaps(starQueriesMap, triplePatterns);
 
             long graphSize = 0;
-            for (SchemaInfo si : schemaInfos)
-            {
-                graphSize += si.mSize;
+            for (SchemaInfo si : schemaInfos) {
+                if (starQueriesMap.containsKey(si.mSchemaName)) {
+                    graphSize += si.mSize;
+                }
             }
             logger.info("graph size " + graphSize);
             // delta parameter: use 1/n^2, with n = size of the data in the
             // query
             double DELTA = 1 / (Math.pow(graphSize, 2));
             double beta = EPSILON / (2 * Math.log(2 / DELTA));
-            if (Helper.isStarQuery(q))
-            {
-                String starType = Helper.getStarType(q);
-                for (SchemaInfo schemaInfo : schemaInfos)
-                {
-                    if (schemaInfo.mSchemaName == starType)
-                        graphSize += schemaInfo.mSize;
-                }
+            if (Helper.isStarQuery(q)) {
                 starQuery = true;
                 elasticStability = "x";
-                Sensitivity sensitivity = new Sensitivity(1.0,
-                        elasticStability);
-                smoothSensitivity = GraphElasticSensitivity
-                        .smoothElasticSensitivityStar(elasticStability,
-                                sensitivity, beta, k, graphSize);
-                logger.info("star query (smooth) sensitivity: "
-                        + smoothSensitivity);
-            }
-            else
-            {
+                Sensitivity sensitivity = new Sensitivity(1.0, elasticStability);
+                smoothSensitivity = GraphElasticSensitivity.smoothElasticSensitivityStar(elasticStability, sensitivity,
+                        beta, k, graphSize);
+                logger.info("star query (smooth) sensitivity: " + smoothSensitivity);
+            } else {
                 // elasticStability = GraphElasticSensitivity
                 // .calculateSensitivity(k, starQueriesMap,
                 // EPSILON, hdtDataSource);
 
                 List<StarQuery> listStars = new ArrayList<>();
-                for (List<TriplePath> tp : starQueriesMap.values())
-                {
-                    listStars.add(new StarQuery(tp));
+                for(String key : starQueriesMap.keySet()){
+                    listStars.add(new StarQuery(starQueriesMap.get(key), key));
                 }
-                StarQuery sq = GraphElasticSensitivity.calculateSensitivity(k,
-                        listStars, EPSILON, hdtDataSource);
+                StarQuery sq = GraphElasticSensitivity.calculateSensitivity(k, listStars, EPSILON, dataSource);
 
                 logger.info("Elastic Stability: " + sq.getElasticStability());
-                smoothSensitivity = GraphElasticSensitivity
-                        .smoothElasticSensitivity(sq.getElasticStability(), 0,
-                                beta, k, graphSize);
-                logger.info("Path Smooth Sensitivity: "
-                        + smoothSensitivity.getSensitivity());
+                smoothSensitivity = GraphElasticSensitivity.smoothElasticSensitivity(sq.getElasticStability(), 0, beta,
+                        k, graphSize);
+                logger.info("Path Smooth Sensitivity: " + smoothSensitivity.getSensitivity());
             }
 
             // add noise using Laplace Probability Density Function
             // 2 * sensitivity / epsilon
             double scale = 2 * smoothSensitivity.getSensitivity() / EPSILON;
 
-            writeAnalysisResult(scale, queryFile, EPSILON, evaluation,
-                    countQueryResult, elasticStability, graphSize, starQuery,
-                    hdtDataSource, EPSILON, smoothSensitivity, outpuFile);
+            writeAnalysisResult(scale, queryFile, EPSILON, evaluation, countQueryResult, elasticStability, graphSize,
+                    starQuery, dataSource, EPSILON, smoothSensitivity, outpuFile);
 
         }
     }
 
-    private static void parseInput(String[] args) throws IOException
-    {
+    private static void parseInput(String[] args) throws IOException {
         // create Options object
         Options options = new Options();
 
@@ -217,101 +169,71 @@ public class RunSymbolic
         options.addOption("eps", "epsilon", true, "epsilon");
 
         CommandLineParser parser = new DefaultParser();
-        try
-        {
+        try {
             CommandLine cmd = parser.parse(options, args);
-            if (cmd.hasOption("q"))
-            {
+            if (cmd.hasOption("q")) {
                 queryString = cmd.getOptionValue("q");
-            }
-            else
-            {
+            } else {
                 logger.info("Missing SPARQL query ");
             }
-            if (cmd.hasOption("eps"))
-            {
+            if (cmd.hasOption("eps")) {
                 EPSILON = Double.parseDouble(cmd.getOptionValue("eps"));
-            }
-            else
-            {
+            } else {
                 logger.info("Missing SPARQL query ");
             }
-            if (cmd.hasOption("f"))
-            {
+            if (cmd.hasOption("f")) {
                 queryFile = cmd.getOptionValue("f");
                 // queryString = new Scanner(new File(queryFile))
                 // .useDelimiter("\\Z").next();
                 // transform into Jena Query object
-            }
-            else
-            {
+            } else {
                 logger.info("Missing SPARQL query file");
             }
-            if (cmd.hasOption("d"))
-            {
+            if (cmd.hasOption("d")) {
                 dataFile = cmd.getOptionValue("d");
-            }
-            else
-            {
+            } else {
                 logger.info("Missing data file");
             }
-            if (cmd.hasOption("e"))
-            {
+            if (cmd.hasOption("e")) {
                 endpoint = cmd.getOptionValue("e");
-            }
-            else
-            {
+            } else {
                 logger.info("Missing endpoint address");
             }
-            if (cmd.hasOption("o"))
-            {
+            if (cmd.hasOption("o")) {
                 outputFile = cmd.getOptionValue("o");
-                if (!Files.exists(Paths.get(outputFile)))
-                {
+                if (!Files.exists(Paths.get(outputFile))) {
                     Files.createFile(Paths.get(outputFile));
                 }
-            }
-            else
-            {
+            } else {
                 logger.info("Missing output file");
             }
-            if (cmd.hasOption("v"))
-            {
+            if (cmd.hasOption("v")) {
                 evaluation = true;
             }
-        }
-        catch (ParseException e1)
-        {
+        } catch (ParseException e1) {
             System.out.println(e1.getMessage());
             System.exit(-1);
         }
 
     }
 
-    private static void writeAnalysisResult(double scale, String queryFile,
-            double ePSILON, boolean evaluation, int countQueryResult,
-            String elasticStability, long graphSize, boolean starQuery,
-            DataSource hdtDataSource, double EPSILON,
-            Sensitivity smoothSensitivity, String outpuFile) throws IOException
-    {
+    private static void writeAnalysisResult(double scale, String queryFile, double ePSILON, boolean evaluation,
+            int countQueryResult, String elasticStability, long graphSize, boolean starQuery, DataSource hdtDataSource,
+            double EPSILON, Sensitivity smoothSensitivity, String outpuFile) throws IOException {
         SecureRandom random = new SecureRandom();
 
         int times = 1;
-        if (evaluation)
-        {
+        if (evaluation) {
             times = 100;
         }
 
         List<Double> privateResultList = new ArrayList<>();
         List<Integer> resultList = new ArrayList<>();
-        for (int i = 0; i < times; i++)
-        {
+        for (int i = 0; i < times; i++) {
             double u = 0.5 - random.nextDouble();
             // LaplaceDistribution l = new LaplaceDistribution(u, scale);
-            double noise = -Math.signum(u) * scale
-                    * Math.log(1 - 2 * Math.abs(u));
-            logger.info("Math.log(1 - 2 * Math.abs(u)) "
-                    + Math.log(1 - 2 * Math.abs(u)));
+            double noise = -Math.signum(u) * scale * Math.log(1 - 2 * Math.abs(u));
+            logger.info("Math.log(1 - 2 * Math.abs(u)) " + Math.log(1 - 2 * Math.abs(u)));
 
             double finalResult1 = countQueryResult + noise;
             // double finalResult2 = countQueryResult + l.sample();
@@ -322,33 +244,28 @@ public class RunSymbolic
             privateResultList.add(finalResult1);
             resultList.add(countQueryResult);
         }
-        Result result = new Result(queryFile, EPSILON, privateResultList,
-                smoothSensitivity.getSensitivity(), resultList,
-                smoothSensitivity.getMaxK(), scale, elasticStability, graphSize,
-                starQuery, hdtDataSource.getMapMostFreqValue(),
-                hdtDataSource.getMapMostFreqValueStar());
+        Result result = new Result(queryFile, EPSILON, privateResultList, smoothSensitivity.getSensitivity(),
+                resultList, smoothSensitivity.getMaxK(), scale, elasticStability, graphSize, starQuery,
+                hdtDataSource.getMapMostFreqValue(), hdtDataSource.getMapMostFreqValueStar());
 
         StringBuffer resultsBuffer = new StringBuffer();
         resultsBuffer.append(result.toString().replace('\n', ' '));
         resultsBuffer.append("\n");
 
-        Files.write(Paths.get(outpuFile), resultsBuffer.toString().getBytes(),
-                StandardOpenOption.APPEND);
+        Files.write(Paths.get(outpuFile), resultsBuffer.toString().getBytes(), StandardOpenOption.APPEND);
     }
 
-    private static List<SchemaInfo> getSchemasInfo() throws IOException
-    {
+    private static List<SchemaInfo> getSchemasInfo() throws IOException {
         List<SchemaInfo> schemasInfo = new ArrayList<SchemaInfo>();
-        String schemaInfoFile = readFile("resources/schema.info.json",
-                StandardCharsets.US_ASCII);
-        SchemaInfo[] schemas = new Gson().fromJson(schemaInfoFile,
-                SchemaInfo[].class);
+        String schemaInfoFile = readFile("resources/schema.info.json", StandardCharsets.US_ASCII);
+        System.out.println(schemaInfoFile);
+        Gson gson = new Gson();
+        SchemaInfo[] schemas = gson.fromJson(schemaInfoFile, SchemaInfo[].class);
         schemasInfo = Arrays.asList(schemas);
         return schemasInfo;
     }
 
-    static String readFile(String path, Charset encoding) throws IOException
-    {
+    static String readFile(String path, Charset encoding) throws IOException {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
         return new String(encoded, encoding);
     }

@@ -19,12 +19,20 @@ public class StarQuery implements Comparable<StarQuery> {
 
     private String mpValue;
 
-    public StarQuery(List<TriplePath> triples) {
+    private String starSchemaName;
+
+    public StarQuery(List<TriplePath> triples, String starSchema) {
         this.triples = triples;
+        this.starSchemaName = starSchema;
     }
 
     public StarQuery() {
         this.triples = new ArrayList<>();
+        this.starSchemaName = "";
+    }
+
+    public String getStarSchemaName(){
+        return  starSchemaName;
     }
 
     public boolean addStarQuery(List<TriplePath> triples) {

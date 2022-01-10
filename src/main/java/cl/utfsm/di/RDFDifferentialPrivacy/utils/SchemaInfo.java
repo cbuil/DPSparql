@@ -13,6 +13,7 @@ public class SchemaInfo {
 
     public SchemaInfo(int size, String schemaName, String endpoint){
         mSize = size;
+
         mEndpoint = endpoint;
         mSchemaName = schemaName;
     }

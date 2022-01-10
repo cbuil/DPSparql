@@ -228,13 +228,11 @@ public class Helper
 
     public static int getMaxFreq(HashMap<String, Integer> map)
     {
-        String highestMap = null;
         int mostFreqValue = 0;
         for (Map.Entry<String, Integer> entry : map.entrySet())
         {
             if (entry.getValue() > mostFreqValue)
             {
-                highestMap = entry.getKey();
                 mostFreqValue = entry.getValue();
             }
         }
@@ -266,21 +264,20 @@ public class Helper
                 .getElements();
         ElementPathBlock element = (ElementPathBlock) elements.get(0);
         List<TriplePath> triplePath = element.getPattern().getList();
-        String starQueryVariable = "";
         for (TriplePath tripleInQuery : triplePath)
         {
-            if (tripleInQuery.getObject().isURI())
+            if (tripleInQuery.getSubject().isVariable())
             {
-                if(tripleInQuery.getObject().getURI().contains("Q5")){
+                if(tripleInQuery.getSubject().getName().contains("human")){
                     return "human";
-                } else if(tripleInQuery.getObject().getURI().contains("Q28640")){
+                } else if(tripleInQuery.getSubject().getName().contains("professions")){
                     return "professions";
-                } else if(tripleInQuery.getObject().getURI().contains("Q43229")){
+                } else if(tripleInQuery.getObject().getURI().contains("organizations")){
                     return "organizations";
                 }
             }
         }
-        return "humans";
+        return "unknown";
     }
     
     public static Map<String, List<TriplePath>> getStarPatterns(Query query, List<SchemaInfo> schemaInfos)

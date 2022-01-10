@@ -91,7 +91,7 @@ public class GraphElasticSensitivity {
         // String f2 = new Func("f2", mostPopularValueLeft.multiply(stabilityRight));
 
         // I generate new starQueryPrime
-        StarQuery newStarQueryPrime = new StarQuery(starQueryLeft.getTriples());
+        StarQuery newStarQueryPrime = new StarQuery(starQueryLeft.getTriples(), starQueryLeft.getStarSchemaName() + starQueryRight.getStarSchemaName());
         newStarQueryPrime.addStarQuery(starQueryRight.getTriples());
 
         ExprEvaluator exprEvaluator = new ExprEvaluator(false, (short) 100);

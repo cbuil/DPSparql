@@ -1,17 +1,17 @@
 [
     {
-        "name": "humans",
-        "size": 7000000,
-        "endpoint": "http://localhost:3030/Humans/sparql"
+        "mSize": 7000000,
+        "mSchemaName":"humans",
+        "mEndpoint":"http://localhost:3030/Humans/sparql"
     },
     {
-        "name": "organizations",
-        "size": 39195,
-        "endpoint": "http://localhost:3030/Organizations/sparql"
+        "mSize": 39195,
+        "mSchemaName":"organizations",
+        "mEndpoint":"http://localhost:3030/Organizations/sparql"
     },
     {
-        "name": "professions",
-        "size": 4329,
-        "endpoint": "http://localhost:3030/Professions/sparql"
+        "mSize": 4329,
+        "mSchemaName":"professions",
+        "mEndpoint":"http://localhost:3030/Professions/sparql"
     }
 ]
