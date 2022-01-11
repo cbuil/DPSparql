@@ -25,11 +25,9 @@ import java.util.logging.Level;
 /**
  * @author cbuil
  */
-public class EndpointDataSource implements DataSource
-{
+public class EndpointDataSource implements DataSource {
 
-    private static final Logger logger = LogManager
-            .getLogger(EndpointDataSource.class.getName());
+    private static final Logger logger = LogManager.getLogger(EndpointDataSource.class.getName());
 
     private final String datasource;
 
@@ -41,55 +39,37 @@ public class EndpointDataSource implements DataSource
 
     private final static Map<String, List<StarQuery>> mapMostFreqValueStar = new HashMap<>();
 
-    public EndpointDataSource(String endpoint)
-    {
+    public EndpointDataSource(String endpoint) {
         datasource = endpoint;
-        mostFrequenResultCache = CacheBuilder.newBuilder().recordStats()
-                .maximumWeight(100000)
-                .weigher(new Weigher<MaxFreqQuery, Integer>()
-                {
-                    public int weigh(MaxFreqQuery k, Integer resultSize)
-                    {
+        mostFrequenResultCache = CacheBuilder.newBuilder().recordStats().maximumWeight(100000)
+                .weigher(new Weigher<MaxFreqQuery, Integer>() {
+                    public int weigh(MaxFreqQuery k, Integer resultSize) {
                         return k.getQuerySize();
                     }
-                }).build(new CacheLoader<MaxFreqQuery, Integer>()
-                {
+                }).build(new CacheLoader<MaxFreqQuery, Integer>() {
                     @Override
-                    public Integer load(MaxFreqQuery s) throws Exception
-                    {
-                        logger.debug(
-                                "into mostPopularValueCache CacheLoader, loading: "
-                                        + s.toString());
-                        return getMostFrequentResult(s.getQuery(),
-                                s.getVariableString());
+                    public Integer load(MaxFreqQuery s) throws Exception {
+                        logger.debug("into mostPopularValueCache CacheLoader, loading: " + s.toString());
+                        return getMostFrequentResult(s.getQuery(), s.getVariableString());
                     }
                 });
-        graphSizeCache = CacheBuilder.newBuilder().recordStats()
-                .maximumWeight(1000).weigher(new Weigher<Query, Long>()
-                {
-                    public int weigh(Query k, Long resultSize)
-                    {
+        graphSizeCache = CacheBuilder.newBuilder().recordStats().maximumWeight(1000)
+                .weigher(new Weigher<Query, Long>() {
+                    public int weigh(Query k, Long resultSize) {
                         return k.toString().length();
                     }
-                }).build(new CacheLoader<Query, Long>()
-                {
+                }).build(new CacheLoader<Query, Long>() {
                     @Override
-                    public Long load(Query q)
-                    {
-                        logger.debug(
-                                "into graphSizeCache CacheLoader, loading: "
-                                        + q.toString());
+                    public Long load(Query q) {
+                        logger.debug("into graphSizeCache CacheLoader, loading: " + q.toString());
                         return getGraphSize(q);
                     }
                 });
     }
 
     @Override
-    public ResultSet excecuteQuery(Query query)
-    {
-        try (QueryExecution qexec = QueryExecutionHTTP
-                .service(datasource, query))
-        {
+    public ResultSet excecuteQuery(Query query) {
+        try (QueryExecution qexec = QueryExecutionHTTP.service(datasource, query)) {
             ResultSet results = qexec.execSelect();
             results = ResultSetFactory.copyResults(results);
             qexec.close();
@@ -98,11 +78,8 @@ public class EndpointDataSource implements DataSource
     }
 
     @Override
-    public long getGraphSize(Query query)
-    {
-        try (QueryExecution qexec = QueryExecutionHTTP
-                .service(datasource, query))
-        {
+    public long getGraphSize(Query query) {
+        try (QueryExecution qexec = QueryExecutionHTTP.service(datasource, query)) {
             Model results = qexec.execConstruct();
             long resultSize = results.size();
             qexec.close();
@@ -111,95 +88,79 @@ public class EndpointDataSource implements DataSource
     }
 
     @Override
-    public int executeCountQuery(String queryString)
-    {
+    public int executeCountQuery(String queryString) {
         Query query = QueryFactory.create(queryString);
         logger.info("count query: " + queryString);
         logger.info("query endpoint: " + datasource);
         if (queryString.contains("http://www.wikidata.org/prop/direct/P31")
-                && (queryString.lastIndexOf('?') != queryString.indexOf('?')))
-        {
+                && (queryString.lastIndexOf('?') != queryString.indexOf('?'))) {
             return 85869721;
         }
-        QueryExecution qexec = QueryExecutionHTTP.service(datasource,
-                query);
+        QueryExecution qexec = QueryExecutionHTTP.service(datasource, query);
         ResultSet results = qexec.execSelect();
         QuerySolution soln = results.nextSolution();
-        logger.info("count query executed... ");
+        logger.debug("count query executed... ");
         qexec.close();
         RDFNode x = soln.get(soln.varNames().next());
         int countResult = x.asLiteral().getInt();
-        logger.info("count query result (endpoint): " + countResult);
+        logger.debug("count query result (endpoint): " + countResult);
         return countResult;
     }
 
     @Override
-    public long getGraphSizeTriples(List<List<String>> triplePatternsCount)
-    {
+    public long getGraphSizeTriples(List<List<String>> triplePatternsCount) {
         long count = 0;
-        for (List<String> star : triplePatternsCount)
-        {
+        for (List<String> star : triplePatternsCount) {
             String construct = "";
-            for (String tp : star)
-            {
+            for (String tp : star) {
                 construct += tp + " . ";
             }
             logger.info("construct query for graph size so far: " + construct);
-            count += executeCountQuery(
-                    "SELECT (COUNT(*) as ?count) WHERE { " + construct + "} ");
+            count += executeCountQuery("SELECT (COUNT(*) as ?count) WHERE { " + construct + "} ");
             logger.info("graph size so far: " + count);
         }
         return count;
     }
 
     @Override
-    public int mostFrequenResult(MaxFreqQuery maxFreqQuery)
-    {
-        try
-        {
-            return this.mostFrequenResultCache.get(maxFreqQuery);
-        }
-        catch (ExecutionException ex)
-        {
-            java.util.logging.Logger.getLogger(EndpointDataSource.class.getName())
-                    .log(Level.SEVERE, null, ex);
-            return -1;
-        }
+    public int mostFrequenResult(MaxFreqQuery maxFreqQuery) {
+        // try
+        // {
+        logger.debug("MaxFreqQuery: " + maxFreqQuery.getQuery());
+        // return this.mostFrequenResultCache.get(maxFreqQuery);
+        return this.getMostFrequentResult(maxFreqQuery.getQuery(), maxFreqQuery.getVariableString());
+        // }
+        // catch (ExecutionException ex)
+        // {
+        // java.util.logging.Logger.getLogger(EndpointDataSource.class.getName())
+        // .log(Level.SEVERE, null, ex);
+        // return -1;
+        // }
     }
 
     @Override
-    public void setMostFreqValueMaps(
-            Map<String, List<TriplePath>> starQueriesMap,
-            List<List<String>> triplePatterns) throws ExecutionException
-    {
+    public void setMostFreqValueMaps(Map<String, List<TriplePath>> starQueriesMap, List<List<String>> triplePatterns)
+            throws ExecutionException {
         Map<String, List<Integer>> mapMostFreqValue = new HashMap<>();
         Map<String, List<StarQuery>> mapMostFreqValueStar = new HashMap<>();
-        for (String key : starQueriesMap.keySet())
-        {
+        for (String key : starQueriesMap.keySet()) {
             List<String> listTriple = new ArrayList<>();
             List<TriplePath> starQueryLeft = starQueriesMap.get(key);
             List<String> varStrings = new ArrayList<>();
             int i = 0;
-            for (TriplePath triplePath : starQueryLeft)
-            {
+            for (TriplePath triplePath : starQueryLeft) {
                 String triple = "";
-                if (triplePath.getSubject().isVariable())
-                {
+                if (triplePath.getSubject().isVariable()) {
                     varStrings.add(triplePath.getSubject().getName());
                     triple += "?" + triplePath.getSubject().getName();
-                }
-                else
-                {
+                } else {
                     triple += " ?s" + i + " ";
                 }
                 triple += "<" + triplePath.getPredicate().getURI() + "> ";
-                if (triplePath.getObject().isVariable())
-                {
+                if (triplePath.getObject().isVariable()) {
                     varStrings.add(triplePath.getObject().getName());
                     triple += "?" + triplePath.getObject().getName();
-                }
-                else
-                {
+                } else {
                     triple += " ?o" + i + " ";
                 }
                 i++;
@@ -213,27 +174,19 @@ public class EndpointDataSource implements DataSource
 
             varStrings.addAll(listWithoutDuplicates);
 
-            for (String var : varStrings)
-            {
-                MaxFreqQuery query = new MaxFreqQuery(
-                        Helper.getStarQueryString(starQueryLeft), var);
-                if (mapMostFreqValue.containsKey(var))
-                {
+            for (String var : varStrings) {
+                MaxFreqQuery query = new MaxFreqQuery(Helper.getStarQueryString(starQueryLeft), var);
+                if (mapMostFreqValue.containsKey(var)) {
                     List<Integer> mostFreqValues = mapMostFreqValue.get(var);
-                    List<StarQuery> mostFreqValuesStar = mapMostFreqValueStar
-                            .get(var);
-                    if (!mostFreqValues.isEmpty())
-                    {
-                        mostFreqValues
-                                .add(this.mostFrequenResultCache.get(query));
+                    List<StarQuery> mostFreqValuesStar = mapMostFreqValueStar.get(var);
+                    if (!mostFreqValues.isEmpty()) {
+                        mostFreqValues.add(this.mostFrequenResultCache.get(query));
                         mapMostFreqValue.put(var, mostFreqValues);
 
                         mostFreqValuesStar.add(new StarQuery(starQueryLeft, var));
                         mapMostFreqValueStar.put(var, mostFreqValuesStar);
                     }
-                }
-                else
-                {
+                } else {
                     List<Integer> mostFreqValues = new ArrayList<>();
                     logger.info("query: " + query.getQuery());
                     logger.info("variable: " + query.getVariableString());
@@ -248,43 +201,33 @@ public class EndpointDataSource implements DataSource
     }
 
     @Override
-    public Map<String, List<StarQuery>> getMapMostFreqValueStar()
-    {
+    public Map<String, List<StarQuery>> getMapMostFreqValueStar() {
         return mapMostFreqValueStar;
     }
 
     @Override
-    public Map<String, List<Integer>> getMapMostFreqValue()
-    {
+    public Map<String, List<Integer>> getMapMostFreqValue() {
         return mapMostFreqValue;
     }
 
-    private int getMostFrequentResult(String starQuery, String variableName)
-    {
+    private int getMostFrequentResult(String starQuery, String variableName) {
 
         variableName = variableName.replace("“", "").replace("”", "");
-        String maxFreqQueryString = "select (count(?" + variableName
-                + ") as ?count) where { select ?" + variableName + " WHERE { "
-                + starQuery + "} LIMIT 1000000 " + "} GROUP BY ?" + variableName
-                + " " + "ORDER BY ?" + variableName + " DESC (?count) LIMIT 1 ";
+        String maxFreqQueryString = "select (count(?" + variableName + ") as ?count) where { select ?" + variableName
+                + " WHERE { " + starQuery + "} LIMIT 1000000 " + "} GROUP BY ?" + variableName + " " + "ORDER BY ?"
+                + variableName + " DESC (?count) LIMIT 1 ";
 
         logger.info("query at getMostFrequentResult: " + maxFreqQueryString);
         Query query = QueryFactory.create(maxFreqQueryString);
-        try (QueryExecution qexec = QueryExecutionHTTP
-                .service(datasource, query))
-        {
+        try (QueryExecution qexec = QueryExecutionHTTP.service(datasource, query)) {
             ResultSet results = qexec.execSelect();
-            if (results.hasNext())
-            {
+            if (results.hasNext()) {
                 QuerySolution soln = results.nextSolution();
                 RDFNode x = soln.get("count");
                 int res = x.asLiteral().getInt();
-                logger.info("max freq value: " + res + " for variable "
-                        + variableName);
+                logger.info("max freq value: " + res + " for variable " + variableName);
                 return res;
-            }
-            else
-            {
+            } else {
                 return 0;
             }
         }

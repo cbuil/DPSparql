@@ -76,8 +76,11 @@ public class GenerateCountQueries
             Path queryLocation = Paths.get(queryFile);
             if (Files.isRegularFile(queryLocation))
             {
-                queryString = new Scanner(new File(queryFile))
-                        .useDelimiter("\\Z").next();
+                 try (Scanner input = new Scanner(new File(queryFile))) {
+                    queryString = input.useDelimiter("\\Z").next();
+                } catch(Exception e) {
+                  logger.error(e.toString());
+                }
             }
             else if (Files.isDirectory(queryLocation))
             {

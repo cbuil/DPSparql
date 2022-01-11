@@ -258,7 +258,7 @@ public class RunSymbolic {
     private static List<SchemaInfo> getSchemasInfo() throws IOException {
         List<SchemaInfo> schemasInfo = new ArrayList<SchemaInfo>();
         String schemaInfoFile = readFile("resources/schema.info.json", StandardCharsets.US_ASCII);
-        System.out.println(schemaInfoFile);
+        logger.debug(schemaInfoFile);
         Gson gson = new Gson();
         SchemaInfo[] schemas = gson.fromJson(schemaInfoFile, SchemaInfo[].class);
         schemasInfo = Arrays.asList(schemas);
