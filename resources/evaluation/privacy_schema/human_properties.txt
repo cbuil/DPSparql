@@ -18,4 +18,4 @@ http://www.wikidata.org/prop/direct/P631
 http://www.wikidata.org/prop/direct/P169
 http://www.wikidata.org/prop/direct/P40
 http://www.wikidata.org/prop/direct/P1889
-
+http://www.wikidata.org/prop/direct/P108
