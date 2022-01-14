@@ -1,19 +1,19 @@
 package cl.utfsm.di.RDFDifferentialPrivacy;
 
 public class MaxFreqQuery {
-    private String query;
+    private StarQuery query;
     private String variable;
 
-    public MaxFreqQuery(String tp, String var) {
+    public MaxFreqQuery(StarQuery tp, String var) {
         query = tp;
         variable = var;
     }
 
     public int getQuerySize() {
-        return query.length();
+        return query.getTriples().size();
     }
 
-    public String getQuery() {
+    public StarQuery getQuery() {
         return query;
     }
 
@@ -23,7 +23,7 @@ public class MaxFreqQuery {
     
     @Override
     public String toString(){
-        return query;
+        return query.getTriples().toString();
     }
             
 }

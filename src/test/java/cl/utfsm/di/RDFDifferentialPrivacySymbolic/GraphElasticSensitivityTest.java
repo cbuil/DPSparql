@@ -1,27 +1,9 @@
 package cl.utfsm.di.RDFDifferentialPrivacySymbolic;
 
-import cl.utfsm.di.RDFDifferentialPrivacy.GraphElasticSensitivity;
-import cl.utfsm.di.RDFDifferentialPrivacy.Sensitivity;
-import cl.utfsm.di.RDFDifferentialPrivacy.StarQuery;
-import cl.utfsm.di.RDFDifferentialPrivacy.utils.Helper;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.sparql.core.TriplePath;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
-import symjava.symbolic.Expr;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static symjava.symbolic.Symbol.x;
 
 public class GraphElasticSensitivityTest
 {

@@ -21,6 +21,8 @@ public class StarQuery implements Comparable<StarQuery> {
 
     private String starSchemaName;
 
+    private String starSchemaEndpoint;
+
     public StarQuery(List<TriplePath> triples, String starSchema) {
         this.triples = triples;
         this.starSchemaName = starSchema;

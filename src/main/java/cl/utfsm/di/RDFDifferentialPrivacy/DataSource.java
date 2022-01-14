@@ -12,6 +12,8 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.sparql.core.TriplePath;
 
+import cl.utfsm.di.RDFDifferentialPrivacy.utils.SchemaInfo;
+
 /**
  *
  * @author cbuil
@@ -35,5 +37,9 @@ public interface DataSource
     public Map<String, List<StarQuery>> getMapMostFreqValueStar();
     
     public Map<String, List<Integer>> getMapMostFreqValue();
+
+    public String getSchemaURL(String schemaName);
+
+    public void setSchemasURL(Map<String, String> schemasURL);
     
 }

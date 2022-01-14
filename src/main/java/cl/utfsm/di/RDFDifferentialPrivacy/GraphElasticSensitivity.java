@@ -122,7 +122,7 @@ public class GraphElasticSensitivity {
             DataSource dataSource) {
         // base case: mp(a,s_1,G)
         return Polynomial.createBinomial("x",
-                Integer.toString(dataSource.mostFrequenResult(new MaxFreqQuery(starQuery.toString(), var))));
+                Integer.toString(dataSource.mostFrequenResult(new MaxFreqQuery(starQuery, var))));
     }
 
     public static Sensitivity smoothElasticSensitivity(String elasticSensitivity,

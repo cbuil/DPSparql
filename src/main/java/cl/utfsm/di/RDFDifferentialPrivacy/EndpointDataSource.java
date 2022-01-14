@@ -5,7 +5,8 @@
  */
 package cl.utfsm.di.RDFDifferentialPrivacy;
 
-import cl.utfsm.di.RDFDifferentialPrivacy.utils.Helper;
+import cl.utfsm.di.RDFDifferentialPrivacy.utils.SchemaInfo;
+
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -20,7 +21,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
 
 /**
  * @author cbuil
@@ -39,6 +39,8 @@ public class EndpointDataSource implements DataSource {
 
     private final static Map<String, List<StarQuery>> mapMostFreqValueStar = new HashMap<>();
 
+    private static Map<String, String> schemasURL;
+
     public EndpointDataSource(String endpoint) {
         datasource = endpoint;
         mostFrequenResultCache = CacheBuilder.newBuilder().recordStats().maximumWeight(100000)
@@ -50,7 +52,7 @@ public class EndpointDataSource implements DataSource {
                     @Override
                     public Integer load(MaxFreqQuery s) throws Exception {
                         logger.debug("into mostPopularValueCache CacheLoader, loading: " + s.toString());
-                        return getMostFrequentResult(s.getQuery(), s.getVariableString());
+                        return getMostFrequentResult(s, s.getVariableString());
                     }
                 });
         graphSizeCache = CacheBuilder.newBuilder().recordStats().maximumWeight(1000)
@@ -128,7 +130,7 @@ public class EndpointDataSource implements DataSource {
         // {
         logger.debug("MaxFreqQuery: " + maxFreqQuery.getQuery());
         // return this.mostFrequenResultCache.get(maxFreqQuery);
-        return this.getMostFrequentResult(maxFreqQuery.getQuery(), maxFreqQuery.getVariableString());
+        return this.getMostFrequentResult(maxFreqQuery, maxFreqQuery.getVariableString());
         // }
         // catch (ExecutionException ex)
         // {
@@ -175,7 +177,7 @@ public class EndpointDataSource implements DataSource {
             varStrings.addAll(listWithoutDuplicates);
 
             for (String var : varStrings) {
-                MaxFreqQuery query = new MaxFreqQuery(Helper.getStarQueryString(starQueryLeft), var);
+                MaxFreqQuery query = new MaxFreqQuery(new StarQuery(starQueryLeft, var), var);
                 if (mapMostFreqValue.containsKey(var)) {
                     List<Integer> mostFreqValues = mapMostFreqValue.get(var);
                     List<StarQuery> mostFreqValuesStar = mapMostFreqValueStar.get(var);
@@ -190,7 +192,7 @@ public class EndpointDataSource implements DataSource {
                     List<Integer> mostFreqValues = new ArrayList<>();
                     logger.info("query: " + query.getQuery());
                     logger.info("variable: " + query.getVariableString());
-                    mostFreqValues.add(this.mostFrequenResultCache.get(query));
+                    // mostFreqValues.add(this.mostFrequenResultCache.get(query));
                     mapMostFreqValue.put(var, mostFreqValues);
                     List<StarQuery> mostFreqValuesStar = new ArrayList<>();
                     mostFreqValuesStar.add(new StarQuery(starQueryLeft, var));
@@ -210,17 +212,17 @@ public class EndpointDataSource implements DataSource {
         return mapMostFreqValue;
     }
 
-    private int getMostFrequentResult(String starQuery, String variableName) {
+    private int getMostFrequentResult(MaxFreqQuery starQuery, String variableName) {
 
         variableName = variableName.replace("“", "").replace("”", "");
         String maxFreqQueryString = "select (count(?" + variableName + ") as ?count)"
-                + " WHERE { " + starQuery + "} ORDER BY ?"
+                + " WHERE { " + starQuery.getQuery().toString() + "} ORDER BY ?"
             // GROUP BY ?" + variableName + " " + "ORDER BY ?"
                 + variableName + " DESC (?count) LIMIT 1 ";
 
         logger.info("query at getMostFrequentResult: " + maxFreqQueryString);
         Query query = QueryFactory.create(maxFreqQueryString);
-        try (QueryExecution qexec = QueryExecutionHTTP.service(datasource, query)) {
+        try (QueryExecution qexec = QueryExecutionHTTP.service(schemasURL.get(starQuery.getQuery().getStarSchemaName()), query)) {
             ResultSet results = qexec.execSelect();
             if (results.hasNext()) {
                 QuerySolution soln = results.nextSolution();
@@ -232,6 +234,17 @@ public class EndpointDataSource implements DataSource {
                 return 0;
             }
         }
+    }
+
+    @Override
+    public String getSchemaURL(String schemaName) {
+        return schemasURL.get(schemaName);
+    }
+
+    @Override
+    public void setSchemasURL(Map<String, String> schemasInfo) {
+        this.schemasURL = schemasInfo;
+
     }
 
 }

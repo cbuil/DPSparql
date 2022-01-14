@@ -110,6 +110,11 @@ public class RunSymbolic {
             Map<String, List<TriplePath>> starQueriesMap = Helper.getStarPatterns(q, schemaInfos);
 
             dataSource.setMostFreqValueMaps(starQueriesMap, triplePatterns);
+            Map<String, String> schemasURL = new HashMap<String, String>();
+            for (SchemaInfo schemaInfo : schemaInfos) {
+                schemasURL.put(schemaInfo.mSchemaName, schemaInfo.mEndpoint);
+            }
+            dataSource.setSchemasURL(schemasURL);
 
             long graphSize = 0;
             for (SchemaInfo si : schemaInfos) {

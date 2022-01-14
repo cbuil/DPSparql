@@ -1,6 +1,6 @@
 [
     {
-        "mSize": 7000000,
+        "mSize": 1395603,
         "mSchemaName":"humans",
         "mEndpoint":"http://localhost:3030/Humans/sparql"
     },
