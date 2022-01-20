@@ -60,7 +60,7 @@ public class GraphElasticSensitivity {
         String mostPopularValueLeft;
         String mostPopularValueRight;
         if (starQueryLeft.getMostPopularValue() == null) {
-            mostPopularValueLeft = mostPopularValue(joinVariables.get(0),
+           mostPopularValueLeft = mostPopularValue(joinVariables.get(0),
                     starQueryLeft, hdtDataSource);
             logger.info("mostPopularValueLeft: " + mostPopularValueLeft);
             starQueryLeft.setMostPopularValue(mostPopularValueLeft);

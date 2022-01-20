@@ -111,17 +111,15 @@ public class RunSymbolic {
 
             dataSource.setMostFreqValueMaps(starQueriesMap, triplePatterns);
             Map<String, String> schemasURL = new HashMap<String, String>();
+            long graphSize = 0;
             for (SchemaInfo schemaInfo : schemaInfos) {
                 schemasURL.put(schemaInfo.mSchemaName, schemaInfo.mEndpoint);
+                if (starQueriesMap.containsKey(schemaInfo.mSchemaName)) {
+                    graphSize += schemaInfo.mSize;
+                }
+
             }
             dataSource.setSchemasURL(schemasURL);
-
-            long graphSize = 0;
-            for (SchemaInfo si : schemaInfos) {
-                if (starQueriesMap.containsKey(si.mSchemaName)) {
-                    graphSize += si.mSize;
-                }
-            }
             logger.info("graph size " + graphSize);
             // delta parameter: use 1/n^2, with n = size of the data in the
             // query
@@ -238,17 +236,20 @@ public class RunSymbolic {
             double u = 0.5 - random.nextDouble();
             // LaplaceDistribution l = new LaplaceDistribution(u, scale);
             double noise = -Math.signum(u) * scale * Math.log(1 - 2 * Math.abs(u));
-            logger.info("Math.log(1 - 2 * Math.abs(u)) " + Math.log(1 - 2 * Math.abs(u)));
+            logger.debug("Math.log(1 - 2 * Math.abs(u)) " + Math.log(1 - 2 * Math.abs(u)));
 
             double finalResult1 = countQueryResult + noise;
             // double finalResult2 = countQueryResult + l.sample();
 
-            logger.info("Original result: " + countQueryResult);
-            logger.info("Noise added: " + Math.round(noise));
-            logger.info("Private Result: " + Math.round(finalResult1));
+            logger.debug("Original result: " + countQueryResult);
+            logger.debug("Noise added: " + Math.round(noise));
+            logger.debug("Private Result: " + Math.round(finalResult1));
             privateResultList.add(finalResult1);
             resultList.add(countQueryResult);
         }
+        logger.debug("Original result: " + countQueryResult);
+        logger.debug("Private  result: " + Math.round(privateResultList.get(times - 1)));
+
         Result result = new Result(queryFile, EPSILON, privateResultList, smoothSensitivity.getSensitivity(),
                 resultList, smoothSensitivity.getMaxK(), scale, elasticStability, graphSize, starQuery,
                 hdtDataSource.getMapMostFreqValue(), hdtDataSource.getMapMostFreqValueStar());

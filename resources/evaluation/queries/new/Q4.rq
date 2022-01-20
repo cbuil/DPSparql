@@ -1,11 +1,10 @@
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 PREFIX wd: <http://www.wikidata.org/entity/>
 
-SELECT (COUNT (?human) as ?count) WHERE {
-  ?organization wdt:P31 wd:Q43229 .
-  ?organization wdt:P112 ?founded_by
-  ?organization wdt:P106 ?occupation
-  ?occupation wdt:P31 wd:Q28640 .
-  ?occupation wdt:P101 ?field_of_work .
-
+SELECT (COUNT (?organizations) as ?count) WHERE {
+#  ?organization wdt:P31 wd:Q43229 .
+  ?organizations wdt:P112 ?founded_by .
+  ?organizations wdt:P106 ?professions .
+#  ?occupation wdt:P31 wd:Q28640 .
+  ?professions wdt:P101 ?field_of_work .
 }
