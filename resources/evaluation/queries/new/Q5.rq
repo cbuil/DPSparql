@@ -1,0 +1,9 @@
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+
+SELECT DISTINCT (COUNT (?humans) as ?count) WHERE {
+  ?humans wdt:P533 ?target .
+  ?humans wdt:P31 wd:Q5 .
+  ?organizations wdt:P533 ?target .
+  #?organizations wdt:P31 wd:Q43229
+}
