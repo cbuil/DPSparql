@@ -217,8 +217,8 @@ public class EndpointDataSource implements DataSource {
         variableName = variableName.replace("“", "").replace("”", "");
         String maxFreqQueryString = "select (count(?" + variableName + ") as ?count)"
                 + " WHERE { " + starQuery.getQuery().toString() + "}" + //" ORDER BY ?"
-             " GROUP BY ?" + variableName + " " + "ORDER BY ?"
-                + variableName + " DESC (?count) LIMIT 1 ";
+             " GROUP BY ?" + variableName + " " + "ORDER BY DESC (?count) LIMIT 1";
+                // + " DESC (?count) LIMIT 1 ";
 
         logger.info("query at getMostFrequentResult: " + maxFreqQueryString);
         Query query = QueryFactory.create(maxFreqQueryString);

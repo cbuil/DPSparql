@@ -146,6 +146,7 @@ public class RunSymbolic {
                 logger.info("Elastic Stability: " + sq.getElasticStability());
                 smoothSensitivity = GraphElasticSensitivity.smoothElasticSensitivity(sq.getElasticStability(), 0, beta,
                         k, graphSize);
+                elasticStability = sq.getElasticStability();
                 logger.info("Path Smooth Sensitivity: " + smoothSensitivity.getSensitivity());
             }
 
