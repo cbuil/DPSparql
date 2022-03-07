@@ -2,9 +2,6 @@ PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 PREFIX wd: <http://www.wikidata.org/entity/>
 
 SELECT (COUNT (?humans) as ?count) WHERE {
-#  ?humans wdt:P31 wd:Q5 .         #find humans
-  ?humans wdt:P2002 ?twittter . #with at least one P40 (child) statement
-  ?humans wdt:P108 ?organizations .
   ?organizations wdt:P31 wd:Q43229 .
   ?organizations wdt:P112 ?humans
 }

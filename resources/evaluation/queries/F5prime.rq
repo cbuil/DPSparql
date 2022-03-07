@@ -6,10 +6,9 @@ PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 PREFIX wd: <http://www.wikidata.org/entity/>
 PREFIX schema: <http://schema.org/>
-SELECT  (COUNT(?person) as ?count)
+SELECT  (COUNT(?humans) as ?count)
 WHERE {
   ?humans wdt:P2002 ?twitterName .
   ?humans  wdt:P106 ?professions .
   ?professions wdt:P279 ?tmp1 .
-  ?tmp1 wdt:P279 ?tmp2 . # all subclasses of biologists
 }
