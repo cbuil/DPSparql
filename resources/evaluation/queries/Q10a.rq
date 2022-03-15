@@ -1,7 +1,7 @@
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 PREFIX wd: <http://www.wikidata.org/entity/>
 
-SELECT DISTINCT (COUNT(?humans) as ?count) WHERE {
+SELECT DISTINCT (COUNT(?organizations) as ?count) WHERE {
   ?professions wdt:P425 ?var6 .
   ?organizations wdt:P106 ?professions .
   ?organizations wdt:P31 wd:Q43229 .

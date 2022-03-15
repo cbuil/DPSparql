@@ -1,7 +1,7 @@
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 PREFIX wd: <http://www.wikidata.org/entity/>
 
-Select (COUNT (?humans) as ?count) where {
+Select (COUNT (?organizations) as ?count) where {
   ?organizations wdt:P31 wd:Q43229 .
   ?organizations wdt:P112 ?founded_by
 }

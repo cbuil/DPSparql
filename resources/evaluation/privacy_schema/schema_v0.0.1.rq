@@ -16,7 +16,7 @@ CONSTRUCT WHERE{
   ?human wdt:P31 wd:Q5 .
   ?human wdt:P21 ?sex_gender .
   ?human wdt:P106 ?profession . # 4562477
-  ?human wdt:P40 ?childStatement .
+  ?human wdt:P40 ?child .
   ?human wdt:P2002 ?twitter .
 
 ?human  http://www.wikidata.org/prop/direct/P31 wd:Q5 .
@@ -49,7 +49,7 @@ http://www.wikidata.org/prop/direct/P1889 ?different_from .
  ?profession <http://www.wikidata.org/prop/direct/P106> ?occupation .
  ?profession <http://www.wikidata.org/prop/direct/P101> ?field_of_work .
  ?profession <http://www.wikidata.org/prop/direct/P138> ?named_after .
- ?profession <http://www.wikidata.org/prop/direct/P1269> ?faceet_of .
+ ?profession <http://www.wikidata.org/prop/direct/P1269> ?facet_of .
  ?profession <http://www.wikidata.org/prop/direct/P366> ?has_use .
  ?profession <http://www.wikidata.org/prop/direct/P425> ?field_of_this_occupation .
  ?profession <http://www.wikidata.org/prop/direct/P144> ?based_on .

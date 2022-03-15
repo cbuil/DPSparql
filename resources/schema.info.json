@@ -2,16 +2,16 @@
     {
         "mSize": 1395603,
         "mSchemaName":"humans",
-        "mEndpoint":"http://localhost:3030/Humans/sparql"
+        "mEndpoint":"http://localhost:3333/Humans/sparql"
     },
     {
         "mSize": 39195,
         "mSchemaName":"organizations",
-        "mEndpoint":"http://localhost:3030/Organizations/sparql"
+        "mEndpoint":"http://localhost:3333/Organizations/sparql"
     },
     {
         "mSize": 4329,
         "mSchemaName":"professions",
-        "mEndpoint":"http://localhost:3030/Professions/sparql"
+        "mEndpoint":"http://localhost:3333/Professions/sparql"
     }
 ]

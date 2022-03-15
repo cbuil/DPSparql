@@ -1,0 +1,8 @@
+select (count(distinct ?humans) as ?c) where {
+?humans <http://www.wikidata.org/prop/direct/P21> ?v1 .
+?humans <http://www.wikidata.org/prop/direct/P569> ?v4 .
+?humans <http://www.wikidata.org/prop/direct/P570> ?v2 .
+# ?v3 <http://www.wikidata.org/prop/direct/P40> ?humans .
+?humans  <http://www.wikidata.org/prop/direct/P106> ?professions .
+  ?professions <http://www.wikidata.org/prop/direct/P425> ?field_occupation
+}

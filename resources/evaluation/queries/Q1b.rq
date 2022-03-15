@@ -1,0 +1,7 @@
+select (count(?v0) as ?c) where {
+?v0 <http://www.wikidata.org/prop/direct/P21> ?v1 .
+?v0 <http://www.wikidata.org/prop/direct/P569> ?v4 .
+?v0 <http://www.wikidata.org/prop/direct/P570> ?v2 .
+# ?v3 <http://www.wikidata.org/prop/direct/P40> ?v0 .
+?v0  <http://www.wikidata.org/prop/direct/P106> ?prof .
+}
