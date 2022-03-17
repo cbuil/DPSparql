@@ -1,8 +1,5 @@
-PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-PREFIX wd: <http://www.wikidata.org/entity/>
-SELECT DISTINCT (count(?organizations) as ?count) WHERE {
-  ?professions wdt:P425 ?var6 .
-  ?professions wdt:P31 wd:Q28640 .
-  ?organizations wdt:P106 ?professions .
-  ?organizations wdt:P31 wd:Q43229 .
+SELECT (COUNT (?humans) as ?count) WHERE {
+#  ?humans wdt:P31 <http://www.wikidata.org/entity/Q5> .         #find humans
+  ?humans <http://www.wikidata.org/prop/direct/P2002> ?twittter . #with at least one P40 (child) statement
+  ?humans <http://www.wikidata.org/prop/direct/P108> ?organizations .
 }
