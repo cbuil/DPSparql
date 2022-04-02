@@ -5,8 +5,6 @@
  */
 package cl.utfsm.di.RDFDifferentialPrivacy;
 
-import cl.utfsm.di.RDFDifferentialPrivacy.utils.SchemaInfo;
-
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -31,9 +29,9 @@ public class EndpointDataSource implements DataSource {
 
     private final String datasource;
 
-    private final LoadingCache<MaxFreqQuery, Integer> mostFrequenResultCache;
+    // private final LoadingCache<MaxFreqQuery, Integer> mostFrequenResultCache;
 
-    private final LoadingCache<Query, Long> graphSizeCache;
+    // private final LoadingCache<Query, Long> graphSizeCache;
 
     private final static Map<String, List<Integer>> mapMostFreqValue = new HashMap<>();
 
@@ -43,30 +41,30 @@ public class EndpointDataSource implements DataSource {
 
     public EndpointDataSource(String endpoint) {
         datasource = endpoint;
-        mostFrequenResultCache = CacheBuilder.newBuilder().recordStats().maximumWeight(100000)
-                .weigher(new Weigher<MaxFreqQuery, Integer>() {
-                    public int weigh(MaxFreqQuery k, Integer resultSize) {
-                        return k.getQuerySize();
-                    }
-                }).build(new CacheLoader<MaxFreqQuery, Integer>() {
-                    @Override
-                    public Integer load(MaxFreqQuery s) throws Exception {
-                        logger.debug("into mostPopularValueCache CacheLoader, loading: " + s.toString());
-                        return getMostFrequentResult(s, s.getVariableString());
-                    }
-                });
-        graphSizeCache = CacheBuilder.newBuilder().recordStats().maximumWeight(1000)
-                .weigher(new Weigher<Query, Long>() {
-                    public int weigh(Query k, Long resultSize) {
-                        return k.toString().length();
-                    }
-                }).build(new CacheLoader<Query, Long>() {
-                    @Override
-                    public Long load(Query q) {
-                        logger.debug("into graphSizeCache CacheLoader, loading: " + q.toString());
-                        return getGraphSize(q);
-                    }
-                });
+        // mostFrequenResultCache = CacheBuilder.newBuilder().recordStats().maximumWeight(100000)
+        //         .weigher(new Weigher<MaxFreqQuery, Integer>() {
+        //             public int weigh(MaxFreqQuery k, Integer resultSize) {
+        //                 return k.getQuerySize();
+        //             }
+        //         }).build(new CacheLoader<MaxFreqQuery, Integer>() {
+        //             @Override
+        //             public Integer load(MaxFreqQuery s) throws Exception {
+        //                 logger.debug("into mostPopularValueCache CacheLoader, loading: " + s.toString());
+        //                 return getMostFrequentResult(s, s.getVariableString());
+        //             }
+        //         });
+        // graphSizeCache = CacheBuilder.newBuilder().recordStats().maximumWeight(1000)
+        //         .weigher(new Weigher<Query, Long>() {
+        //             public int weigh(Query k, Long resultSize) {
+        //                 return k.toString().length();
+        //             }
+        //         }).build(new CacheLoader<Query, Long>() {
+        //             @Override
+        //             public Long load(Query q) {
+        //                 logger.debug("into graphSizeCache CacheLoader, loading: " + q.toString());
+        //                 return getGraphSize(q);
+        //             }
+        //         });
     }
 
     @Override
@@ -94,10 +92,6 @@ public class EndpointDataSource implements DataSource {
         Query query = QueryFactory.create(queryString);
         logger.info("count query: " + queryString);
         logger.info("query endpoint: " + datasource);
-        if (queryString.contains("http://www.wikidata.org/prop/direct/P31")
-                && (queryString.lastIndexOf('?') != queryString.indexOf('?'))) {
-            return 85869721;
-        }
         QueryExecution qexec = QueryExecutionHTTP.service(datasource, query);
         ResultSet results = qexec.execSelect();
         QuerySolution soln = results.nextSolution();
@@ -182,7 +176,7 @@ public class EndpointDataSource implements DataSource {
                     List<Integer> mostFreqValues = mapMostFreqValue.get(var);
                     List<StarQuery> mostFreqValuesStar = mapMostFreqValueStar.get(var);
                     if (!mostFreqValues.isEmpty()) {
-                        mostFreqValues.add(this.mostFrequenResultCache.get(query));
+                        mostFreqValues.add(getMostFrequentResult(query, query.getVariableString()));
                         mapMostFreqValue.put(var, mostFreqValues);
 
                         mostFreqValuesStar.add(new StarQuery(starQueryLeft, var));

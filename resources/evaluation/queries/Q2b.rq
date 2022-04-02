@@ -1,0 +1,6 @@
+select (COUNT(?humans) as ?c) WHERE {
+    ?humans <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q5> . 
+    ?humans <http://www.wikidata.org/prop/direct/P69> ?v2 . 
+    ?organizations <http://www.wikidata.org/prop/direct/P169> ?humans .
+    ?organizations <http://www.wikidata.org/prop/direct/P112> ?v3
+}
