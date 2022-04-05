@@ -1,8 +1,9 @@
-PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-PREFIX wd: <http://www.wikidata.org/entity/>
-
-SELECT DISTINCT (COUNT(?organizations) as ?count) WHERE {
-  ?organizations wdt:P106 ?professions .
-  ?organizations wdt:P31 wd:Q43229 .
-
+SELECT (count(?organizations) as ?count) WHERE {
+  # ?professions <http://www.wikidata.org/prop/direct/P1963> ?foc .
+  ?humans <http://www.wikidata.org/prop/direct/P106> ?professions .
+  ?humans <http://www.wikidata.org/prop/direct/P21> ?sex .
+  ?humans <http://www.wikidata.org/prop/direct/P40> ?child .
+  ?organizations <http://www.wikidata.org/prop/direct/P112> ?humans .
+  ?organizations <http://www.wikidata.org/prop/direct/P17> <http://www.wikidata.org/entity/Q30> .
+  ?organizations <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q43229> .
 }

@@ -1,7 +1,7 @@
-PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-PREFIX wd: <http://www.wikidata.org/entity/>
-
-SELECT DISTINCT (COUNT(?humans) as ?count) WHERE {
-  ?humans wdt:P108 ?organizations .
-  ?humans wdt:P31 wd:Q5 .
+SELECT (COUNT(?humans) as ?count) WHERE {
+  ?humans <http://www.wikidata.org/prop/direct/P106> ?professions .
+  ?humans <http://www.wikidata.org/prop/direct/P21> ?v2 .
+  ?humans <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q5> .
+  ?professions <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q28640> .
+  ?professions <http://www.wikidata.org/prop/direct/P425>  <http://www.wikidata.org/entity/Q349> .
 }

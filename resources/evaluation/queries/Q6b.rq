@@ -1,5 +1,4 @@
-SELECT (COUNT (?humans) as ?count) WHERE {
-#  ?humans wdt:P31 <http://www.wikidata.org/entity/Q5> .         #find humans
-  ?humans <http://www.wikidata.org/prop/direct/P2002> ?twittter . #with at least one P40 (child) statement
-  ?humans <http://www.wikidata.org/prop/direct/P108> ?organizations .
+SELECT (COUNT (?organizations) as ?count) WHERE {
+  ?organizations <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q43229> .
+  ?organizations <http://www.wikidata.org/prop/direct/P112> ?founded_by
 }

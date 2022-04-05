@@ -1,8 +1,0 @@
-PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-PREFIX wd: <http://www.wikidata.org/entity/>
-
-Select (COUNT (?humans) as ?count) where {
-  #?humans wdt:P31 wd:Q5 .         #find humans
-  ?humans wdt:P40 ?child . #with at least one P40 (child) statement
-  ?humans wdt:P108 ?organizations .
-}

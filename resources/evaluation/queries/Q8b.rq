@@ -1,6 +1,0 @@
-PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-PREFIX wd: <http://www.wikidata.org/entity/>
-SELECT DISTINCT (COUNT(?organizations) as ?count)  WHERE {
-  ?organizations wdt:P178 ?developer .
-  ?organizations wdt:P31 wd:Q43229 .
-}
