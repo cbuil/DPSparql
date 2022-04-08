@@ -114,9 +114,10 @@ public class RunSymbolic {
             long graphSize = 0;
             for (SchemaInfo schemaInfo : schemaInfos) {
                 schemasURL.put(schemaInfo.mSchemaName, schemaInfo.mEndpoint);
-                if (starQueriesMap.containsKey(schemaInfo.mSchemaName)) {
-                    graphSize += schemaInfo.mSize;
-                }
+                graphSize += schemaInfo.mSize;
+                // if (starQueriesMap.containsKey(schemaInfo.mSchemaName)) {
+                //     graphSize += schemaInfo.mSize;
+                // }
 
             }
             dataSource.setSchemasURL(schemasURL);
