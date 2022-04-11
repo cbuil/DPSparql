@@ -1,7 +1,4 @@
-PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-PREFIX wd: <http://www.wikidata.org/entity/>
-
 Select (COUNT (?organizations) as ?count) where {
-  ?organizations wdt:P31 wd:Q43229 .
-  ?organizations wdt:P112 ?founded_by
+  ?organizations <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q43229> .
+  ?organizations <http://www.wikidata.org/prop/direct/P112> ?founded_by
 }

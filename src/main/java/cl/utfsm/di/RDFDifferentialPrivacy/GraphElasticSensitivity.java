@@ -62,7 +62,7 @@ public class GraphElasticSensitivity {
         if (starQueryLeft.getMostPopularValue() == null) {
            mostPopularValueLeft = mostPopularValue(joinVariables.get(0),
                     starQueryLeft, hdtDataSource);
-            logger.info("mostPopularValueLeft: " + mostPopularValueLeft);
+            logger.info("mostPopularValueLeft: " + mostPopularValueLeft + " for variable " + joinVariables.get(0) + " in query " + starQueryLeft.getTriples().toString());
             starQueryLeft.setMostPopularValue(mostPopularValueLeft);
         } else {
             mostPopularValueLeft = starQueryLeft.getMostPopularValue();
@@ -70,7 +70,7 @@ public class GraphElasticSensitivity {
         if (starQueryRight.getMostPopularValue() == null) {
             mostPopularValueRight = mostPopularValue(joinVariables.get(0),
                     starQueryRight, hdtDataSource);
-            logger.info("mostPopularValueRight: " + mostPopularValueRight);
+            logger.info("mostPopularValueRight: " + mostPopularValueRight + " for variable " + joinVariables.get(0) + " in query " + starQueryRight.getTriples().toString());
             starQueryRight.setMostPopularValue(mostPopularValueRight);
         } else {
             mostPopularValueRight = starQueryRight.getMostPopularValue();

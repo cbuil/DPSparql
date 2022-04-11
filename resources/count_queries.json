@@ -31,13 +31,15 @@
     "id": "Q3a",
     "endpoint": "http://localhost:3333/Organizations/sparql",
     "variable": "count_professions",
-    "query": "SELECT (count(DISTINCT ?professions) as ?count_professions) WHERE {        ?professions <http://www.wikidata.org/prop/direct/P425> ?var6 .        ?professions <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q28640> .        }"
+    "query": "SELECT (count(DISTINCT ?professions) as ?count_professions) WHERE {        ?professions <http://www.wikidata.org/prop/direct/P425> ?var6 .        ?professions <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q28640> .        }", 
+    "comment": "Organizations star size"
 },
 {
     "id": "Q4a",
     "endpoint": "http://localhost:3333/Humans/sparql",
     "variable": "count_organizations",
-    "query": "Select (COUNT (?organizations) as ?count_organizations) where {        #?humans wdt:P31 wd:Q5 .        ?humans <http://www.wikidata.org/prop/direct/P40> ?child . ?humans <http://www.wikidata.org/prop/direct/P108> ?organizations .}        "
+    "query": "Select (COUNT (?organizations) as ?count_organizations) where {        #?humans wdt:P31 wd:Q5 .        ?humans <http://www.wikidata.org/prop/direct/P40> ?child . ?humans <http://www.wikidata.org/prop/direct/P108> ?organizations .}        ", 
+    "comment": "Organizations star size"
 },{
     "id": "Q4a",
     "endpoint": "http://localhost:3333/Humans/sparql",

@@ -13,8 +13,8 @@ def run_count(json_query_file):
                 sparql.setReturnFormat(JSON)
                 query_results = sparql.query().convert()
                 for query_result in query_results["results"]["bindings"]:
-                    if not query["query"].replace(" ", "").lower() in results:
-                        results[query["query"].replace(" ", "").lower()] = [query_result["variable"]["value"], query["comment"], query["variable"], query["endpoint"], query["query"]]
+                    if not query['query'].replace(" ", "").lower() in results:
+                        results[query["query"].replace(" ", "").lower()] = [query_result[query['variable']]['value'], query['comment'], query['variable'], query['endpoint'], query['query']]
     with open('data.json', 'w') as f:
         json.dump(results, f, indent=4)
 
