@@ -1,4 +1,4 @@
 select (count(?humans) as ?c) where {
-?organizations <http://www.wikidata.org/prop/direct/P138> ?humans .
-?organizations <http://www.wikidata.org/prop/direct/P112> ?founded_by
+?organizations <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q43229> .
+?organizations <http://www.wikidata.org/prop/direct/P112> ?humans
 }
