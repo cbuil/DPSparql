@@ -13,5 +13,10 @@
         "mSize": 4329,
         "mSchemaName":"professions",
         "mEndpoint":"http://localhost:3333/Professions/sparql"
+    },
+    {
+        "mSize": 6446860,
+        "mSchemaName":"occupationsStar",
+        "mEndpoint":"http://localhost:3333/OccupationsStar/sparql"
     }
 ]

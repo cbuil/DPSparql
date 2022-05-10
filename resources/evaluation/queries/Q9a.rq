@@ -1,7 +1,7 @@
-SELECT (COUNT (?humans) as ?count) WHERE {
-  ?humans <http://www.wikidata.org/entity/P31> <http://www.wikidata.org/prop/direct/Q5> .         #find humans
-  ?humans <http://www.wikidata.org/entity/P2002> ?twittter . #with at least one P40 (child) statement
-  ?humans <http://www.wikidata.org/entity/P108> ?organizations .
-  ?organizations <http://www.wikidata.org/entity/P31> <http://www.wikidata.org/prop/direct/Q43229> .
-  ?organizations <http://www.wikidata.org/entity/P112> ?founded_by
+SELECT (COUNT (DISTINCT ?humans) as ?count) WHERE {
+#  ?organizations <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q43229> .
+?humans <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q5> .
+?humans  <http://www.wikidata.org/prop/direct/P108> ?occupationsStar .
+  ?occupationsStar <http://www.wikidata.org/prop/direct/P106> ?professions .
+  ?professions <http://www.wikidata.org/prop/direct/P425> ?var6 .
 }

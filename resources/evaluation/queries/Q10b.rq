@@ -1,5 +1,7 @@
-SELECT (COUNT(?humans) as ?cnt) WHERE {
-  ?humans <http://www.wikidata.org/prop/direct/P106> <http://www.wikidata.org/entity/Q2066131> .
+SELECT (COUNT(?humans) as ?count) WHERE {
+  ?humans <http://www.wikidata.org/prop/direct/P106> ?professions .
   ?humans <http://www.wikidata.org/prop/direct/P21> ?v2 .
   ?humans <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q5> .
+  ?professions <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q28640> .
+  ?professions <http://www.wikidata.org/prop/direct/P425>  <http://www.wikidata.org/entity/Q349> .
 }
