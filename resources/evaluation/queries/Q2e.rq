@@ -1,4 +1,4 @@
-select (COUNT(distinct ?professions) as ?c) WHERE {
+select (COUNT(DISTINCT ?professions) as ?c) WHERE {
     ?humans <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q5> . 
     ?humans <http://www.wikidata.org/prop/direct/P106> ?professions . 
     ?humans <http://www.wikidata.org/prop/direct/P2002> ?twitter . 

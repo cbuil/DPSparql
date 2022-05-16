@@ -1,4 +1,4 @@
-SELECT DISTINCT (COUNT(?humans) as ?count) WHERE {
+SELECT (COUNT(DISTINCT ?humans) as ?count) WHERE {
   ?professions <http://www.wikidata.org/prop/direct/P425> ?var6 .
   ?organizations <http://www.wikidata.org/prop/direct/P106> ?professions .
   ?organizations <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q43229> .

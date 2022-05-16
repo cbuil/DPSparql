@@ -1,4 +1,4 @@
-SELECT (COUNT (?organizations) as ?count) WHERE {
+SELECT (COUNT (DISTINCT ?organizations) as ?count) WHERE {
   ?organizations <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q43229> .
   ?organizations <http://www.wikidata.org/prop/direct/P112> ?founded_by
 }

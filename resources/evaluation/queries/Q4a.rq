@@ -1,4 +1,4 @@
-Select (COUNT (?humans) as ?count) where {
+Select (COUNT (DISTINCT ?humans) as ?count) where {
   ?humans <http://www.wikidata.org/prop/direct/P40> ?child .
   ?humans <http://www.wikidata.org/prop/direct/P108> ?organizations .
 }
