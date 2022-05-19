@@ -20,7 +20,7 @@ def parse_results(input_filename, output_filename):
     with open(input_filename) as f:
         with open(output_filename, 'w') as fw:
             fw.write(
-                "query\tactualResult\tpercentage_error\tgraphSize\tmaxK\tscale\tepsilon\tSensitivity\telasticStability\ttripleSelectivity\tmapMostFreqValue\n")
+                "query\tactualResult\tpercentage_error\tgraphSize\tmaxK\tscale\tepsilon\tSensitivity\telasticStability\taveragePrivateResukt\tmapMostFreqValue\n")
             for line in f.readlines():
                 query_results = json.loads(line)
                 private_result = query_results['privateResult']
@@ -38,7 +38,8 @@ def parse_results(input_filename, output_filename):
                 fw.write(str(query_results['scale']) + str('\t'))
                 fw.write(str(query_results['epsilon']) + str('\t'))
                 fw.write(str(query_results['sensitivity']) + str('\t'))
-                fw.write(str(query_results['elasticStability']) + str('\t'))
+                # fw.write(str(query_results['elasticStability']) + str('\t'))
+                fw.write(str(np.average(private_result)))
                 fw.write(str(query_results['mapMostFreqValue']))
                 # fw.write(str(query_results['mapMostFreqValueStar']))
                 fw.write('\n')
