@@ -1,4 +1,3 @@
 select (count(DISTINCT ?humans) as ?c) where {
 ?humans <http://www.wikidata.org/prop/direct/P106> ?organizations .
-?humans <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q5> .
 }

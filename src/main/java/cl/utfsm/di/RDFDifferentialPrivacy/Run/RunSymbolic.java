@@ -153,7 +153,13 @@ public class RunSymbolic {
 
             // add noise using Laplace Probability Density Function
             // 2 * sensitivity / epsilon
+            EPSILON = 1.0;
             double scale = 2 * smoothSensitivity.getSensitivity() / EPSILON;
+
+            writeAnalysisResult(scale, queryFile, EPSILON, evaluation, countQueryResult, elasticStability, graphSize,
+                    starQuery, dataSource, EPSILON, smoothSensitivity, outpuFile);
+            EPSILON = 0.1;
+            scale = 2 * smoothSensitivity.getSensitivity() / EPSILON;
 
             writeAnalysisResult(scale, queryFile, EPSILON, evaluation, countQueryResult, elasticStability, graphSize,
                     starQuery, dataSource, EPSILON, smoothSensitivity, outpuFile);

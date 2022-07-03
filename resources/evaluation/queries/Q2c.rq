@@ -1,7 +1,5 @@
-select (COUNT(DISTINCT ?humans) as ?c) WHERE {
-    ?humans <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q5> . 
+SELECT (COUNT(DISTINCT ?humans) as ?c) WHERE {
     ?humans <http://www.wikidata.org/prop/direct/P69> ?v2 .
     ?humans <http://www.wikidata.org/prop/direct/P106> ?professions . 
-    ?professions <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q28640> .
     ?professions <http://www.wikidata.org/prop/direct/P425> ?field 
 }

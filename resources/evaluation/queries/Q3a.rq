@@ -1,4 +1,3 @@
-SELECT (count(DISTINCT ?professions) as ?count) WHERE {
+SELECT (COUNT(DISTINCT ?professions) as ?count) WHERE {
   ?professions <http://www.wikidata.org/prop/direct/P425> ?var6 .
-  ?professions <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q28640> .
 }

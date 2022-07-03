@@ -1,7 +1,5 @@
 SELECT (COUNT (DISTINCT ?humans) as ?count) WHERE {
-#  ?organizations <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q43229> .
-?humans <http://www.wikidata.org/prop/direct/P31> <http://www.wikidata.org/entity/Q5> .
-?humans  <http://www.wikidata.org/prop/direct/P108> ?occupationsStar .
+  ?humans  <http://www.wikidata.org/prop/direct/P108> ?occupationsStar .
   ?occupationsStar <http://www.wikidata.org/prop/direct/P106> ?professions .
   ?professions <http://www.wikidata.org/prop/direct/P425> ?var6 .
 }
