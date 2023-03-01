@@ -1,0 +1,5 @@
+SELECT (COUNT (DISTINCT ?humans) as ?count) WHERE {
+  ?humans <http://www.wikidata.org/prop/direct/P2002> ?twittter . #with at least one P40 (child) statement
+  ?humans <http://www.wikidata.org/prop/direct/P108> ?organizations .
+  ?organizations <http://www.wikidata.org/prop/direct/P112> ?emplois .
+}
